@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chatbot Widget Test</title>
+
+  <!-- Google Chat Messenger SDK -->
+  <script defer
+    src="https://www.gstatic.com/chat-messenger/sdk/prod/v1.16/chat-messenger.js">
+  </script>
+  <link rel="stylesheet" href="https://www.gstatic.com/chat-messenger/sdk/prod/v1.16/themes/chat-messenger-default.css">
+  <link rel="stylesheet" href="https://www.gstatic.com/chat-messenger/sdk/prod/v1.16/themes/chat-messenger-layout.css">
+
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      color: #1a1a1a; background: #fafafa; line-height: 1.6;
+      min-height: 100vh;
+    }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 4rem 1.5rem; }
+    .badge {
+      display: inline-block; background: #ff7900; color: #fff;
+      font-size: .8rem; font-weight: 700; letter-spacing: .04em;
+      padding: .25rem .7rem; border-radius: 999px; text-transform: uppercase;
+      margin-bottom: 1.2rem;
+    }
+    h1 { font-size: 2.2rem; margin-bottom: .6rem; }
+    p.lead { font-size: 1.15rem; color: #555; margin-bottom: 2rem; }
+    .card {
+      background: #fff; border: 1px solid #e6e6e6; border-radius: 10px;
+      padding: 1.5rem; margin-bottom: 1.25rem;
+    }
+    .card h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: .04em;
+      color: #888; margin-bottom: .6rem; }
+    .card p { color: #333; }
+    code { background: #f0f0f0; padding: .1rem .35rem; border-radius: 4px;
+      font-size: .9em; word-break: break-all; }
+    .hint { color: #888; font-size: .9rem; }
+    .arrow { color: #ff7900; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <span class="badge">Widget test page</span>
+    <h1>Max Sales Agent — live test</h1>
+    <p class="lead">This page embeds the chatbot widget so you can try it and share the URL with colleagues.</p>
+
+    <div class="card">
+      <h2>How to use</h2>
+      <p>Look for the chat bubble in the <strong>bottom-right corner</strong> <span class="arrow">↘</span> and click it to start chatting with the agent.</p>
+    </div>
+
+    <div class="card">
+      <h2>Deployment</h2>
+      <p class="hint">SDK v1.16 · <code>apps/12ada6bb…/deployments/ceee3ab8…</code></p>
+    </div>
+  </div>
+
+  <!-- =========================================================
+       CHATBOT WIDGET (Google Chat Messenger)
+       ========================================================= -->
+  <script>
+    window.addEventListener("chat-messenger-loaded", () => {
+      chatSdk.registerContext(
+        chatSdk.prebuilts.ces.createContext({
+          deploymentName: "projects/687185849302/locations/eu/apps/12ada6bb-ab30-4755-a234-65904434e4e5/deployments/ceee3ab8-8cc7-4f91-af47-498184664772",
+          tokenBroker: {
+            enableTokenBroker: true,
+            enableRecaptcha: false
+          }
+        }),
+      );
+    });
+  </script>
+  <!-- Update url-allowlist with a comma-separated list of origins allowed to render images -->
+  <chat-messenger url-allowlist="*">
+    <chat-messenger-container
+      chat-title="Max Sales Agent"
+      chat-title-icon="https://gstatic.com/dialogflow-console/common/assets/ccai-favicons/conversational_agents.png"
+      enable-file-upload
+    >
+      <chat-reset-session-button
+        slot="titlebar-actions"
+        title-text="Start new chat"
+      ></chat-reset-session-button>
+      <chat-toggle-dialog-button
+        slot="titlebar-actions"
+        title-text-expanded="Collapse"
+        title-text-collapsed="Expand"
+      ></chat-toggle-dialog-button>
+      <chat-messenger-close-button
+        slot="titlebar-actions"
+        title-text="Close"
+      ></chat-messenger-close-button>
+    </chat-messenger-container>
+  </chat-messenger>
+</body>
+</html>
