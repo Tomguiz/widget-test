@@ -1,242 +1,1678 @@
-/* ================================
-   Ajustement compact du dashboard
-   ================================ */
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-:root {
-  --sidebar-width: 260px;
-  --content-gap: 28px;
-  --text-main: #222;
-  --text-muted: #888;
+  <title>CX Team Projects</title>
+
+  <link
+    href="https://cdn.jsdelivr.net/npm/boosted@5.3.3/dist/css/boosted.min.css"
+    rel="stylesheet"
+    integrity="sha384-laZ3JUZ5Ln2YqhfBvadDpNyBo7w5qmWaRnnXuRwNhJeTEFuSdGbzl4ZGHAEnTozR"
+    crossorigin="anonymous">
+
+  <style>
+    :root {
+      --orange: #f16e00;
+      --background: #f5f5f5;
+      --sidebar-width: 255px;
+      --border: #dedede;
+      --muted: #888;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: #222;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar */
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: var(--sidebar-width);
+      padding: 24px 14px 16px;
+      background: #fff;
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px;
+      margin-bottom: 30px;
+    }
+
+    .brand-logo {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 44px;
+      display: grid;
+      place-items: center;
+      background: var(--orange);
+      color: #fff;
+      font-size: 27px;
+      font-weight: 700;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 21px;
+      line-height: 1.15;
+      white-space: nowrap;
+    }
+
+    .brand-total {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .navigation {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .nav-link {
+      width: 100%;
+      padding: 13px 12px;
+      border-left: 3px solid transparent;
+      color: #555;
+      cursor: pointer;
+      font-size: 17px;
+      text-decoration: none;
+    }
+
+    .nav-link:hover {
+      background: #f7f7f7;
+      color: #222;
+    }
+
+    .nav-link.active {
+      background: #f3f3f3;
+      border-left-color: var(--orange);
+      color: #222;
+      font-weight: 600;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+    }
+
+    .sidebar-bottom .btn {
+      min-height: 40px;
+      padding: 8px 12px;
+      font-size: 14px;
+    }
+
+    .data-info {
+      margin: 10px 0 16px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    /* Main */
+
+    .main {
+      width: calc(100% - var(--sidebar-width));
+      min-width: 0;
+      margin-left: var(--sidebar-width);
+      padding: 24px 32px;
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: minmax(260px, 420px) repeat(4, max-content) 1fr;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .search {
+      width: 100%;
+      height: 48px;
+      padding: 10px 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      font-size: 16px;
+    }
+
+    .status-counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      height: 46px;
+      padding: 0 17px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: #fff;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .status-counter strong {
+      font-size: 20px;
+    }
+
+    .counter-going strong {
+      color: #1769e0;
+    }
+
+    .counter-done strong {
+      color: #238348;
+    }
+
+    .counter-hold strong {
+      color: #b27800;
+    }
+
+    .counter-cancelled strong {
+      color: #a52b2b;
+    }
+
+    .showing {
+      color: var(--muted);
+      font-size: 14px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 265px minmax(0, 1fr);
+      align-items: start;
+      gap: 28px;
+    }
+
+    /* Filters */
+
+    .filter-label {
+      display: block;
+      margin: 15px 0 6px;
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .filter-label:first-child {
+      margin-top: 0;
+    }
+
+    .filter-select {
+      width: 100%;
+      height: 46px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      color: #222;
+      font-size: 15px;
+    }
+
+    .clear-button {
+      width: 100%;
+      height: 44px;
+      margin-top: 18px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      color: #555;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .clear-button:hover {
+      border-color: var(--orange);
+      color: var(--orange);
+    }
+
+    /* Project cards */
+
+    .project-list {
+      min-width: 0;
+    }
+
+    .project-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 18px;
+      min-height: 82px;
+      margin-bottom: 10px;
+      padding: 15px 20px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+      cursor: pointer;
+      transition: border-color .15s ease, box-shadow .15s ease;
+    }
+
+    .project-card:hover {
+      border-color: #999;
+      box-shadow: 0 2px 7px rgb(0 0 0 / 8%);
+    }
+
+    .project-name {
+      overflow-wrap: anywhere;
+      font-size: 17px;
+      font-weight: 600;
+      line-height: 1.25;
+    }
+
+    .project-team {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.35;
+    }
+
+    .project-badges {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .project-badge {
+      padding: 7px 10px;
+      border: 1px solid #b1c4d1;
+      border-radius: 7px;
+      background: #fafafa;
+      color: #397398;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    .badge-going {
+      border-color: #9db9ed;
+      color: #1769e0;
+    }
+
+    .badge-done {
+      border-color: #9fc2aa;
+      color: #247b43;
+    }
+
+    .badge-hold {
+      border-color: #d8bd7c;
+      color: #a87200;
+    }
+
+    .badge-cancelled {
+      border-color: #d4a2a2;
+      color: #a52b2b;
+    }
+
+    .badge-release {
+      border-color: #ddd;
+      color: #888;
+    }
+
+    /* Other views */
+
+    .view-title {
+      margin: 0 0 18px;
+      font-size: 24px;
+    }
+
+    .view-card {
+      overflow: auto;
+      padding: 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: #fff;
+    }
+
+    .view-card table {
+      width: 100%;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .quality-list {
+      margin: 0;
+      padding-left: 20px;
+      font-size: 14px;
+    }
+
+    .empty-state {
+      padding: 35px 10px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    /* Assistant */
+
+    .assistant-button {
+      position: fixed;
+      right: 24px;
+      bottom: 22px;
+      width: 56px;
+      height: 56px;
+      border: 0;
+      border-radius: 50%;
+      background: var(--orange);
+      color: #fff;
+      box-shadow: 0 3px 10px rgb(0 0 0 / 25%);
+      cursor: pointer;
+      font-size: 24px;
+      z-index: 20;
+    }
+
+    .assistant-button:hover {
+      background: #d85f00;
+    }
+
+    /* Modal */
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 10px 18px;
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .detail-grid dt {
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .detail-grid dd {
+      margin: 0;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    /* Responsive */
+
+    @media (max-width: 1450px) {
+      .topbar {
+        grid-template-columns: minmax(240px, 1fr) repeat(4, max-content);
+      }
+
+      .showing {
+        grid-column: 1 / -1;
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 1050px) {
+      :root {
+        --sidebar-width: 220px;
+      }
+
+      .main {
+        padding: 20px;
+      }
+
+      .content-grid {
+        grid-template-columns: 230px minmax(0, 1fr);
+        gap: 20px;
+      }
+
+      .project-card {
+        grid-template-columns: 1fr;
+      }
+
+      .project-badges {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 780px) {
+      .app {
+        display: block;
+      }
+
+      .sidebar {
+        position: static;
+        width: 100%;
+        min-height: auto;
+        border-right: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .main {
+        width: 100%;
+        margin-left: 0;
+      }
+
+      .navigation {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+      }
+
+      .sidebar-bottom {
+        margin-top: 20px;
+      }
+
+      .topbar {
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .search {
+        flex: 1 1 100%;
+      }
+
+      .status-counter {
+        flex: 1 1 auto;
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .main {
+        padding: 15px;
+      }
+
+      .navigation {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .status-counter {
+        width: calc(50% - 6px);
+        justify-content: center;
+      }
+
+      .project-card {
+        padding: 14px;
+      }
+
+      .detail-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-logo">−</div>
+      <div>
+        <h1 class="brand-title">CX Team Projects</h1>
+        <span id="totalProjects" class="brand-total">0 projects</span>
+      </div>
+    </div>
+
+    <nav id="navigation" class="navigation">
+      <a class="nav-link active" data-view="Portfolio">Portfolio</a>
+      <a class="nav-link" data-view="Timeline">Timeline</a>
+      <a class="nav-link" data-view="People">People</a>
+      <a class="nav-link" data-view="Changes">Changes</a>
+      <a class="nav-link" data-view="Quality">Quality</a>
+      <a class="nav-link" data-view="Reports">Reports</a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button id="refreshButton" class="btn btn-outline-secondary w-100">
+        ↻ Refresh
+      </button>
+
+      <div id="dataInfo" class="data-info">
+        Data loaded locally
+      </div>
+
+      <label class="btn btn-outline-primary w-100 mb-2">
+        Import Excel
+        <input id="excelInput" type="file" accept=".xlsm,.xlsx" hidden>
+      </label>
+
+      <button id="exportButton" class="btn btn-outline-secondary w-100 mb-3">
+        Export Excel
+      </button>
+
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary flex-fill">EN</button>
+        <button class="btn btn-outline-secondary flex-fill">FR</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <section id="portfolioView">
+      <div class="topbar">
+        <input
+          id="searchInput"
+          class="search"
+          type="search"
+          placeholder="Search projects, people, domain">
+
+        <div class="status-counter counter-going">
+          <strong id="countGoing">0</strong>
+          <span>On Going</span>
+        </div>
+
+        <div class="status-counter counter-done">
+          <strong id="countDone">0</strong>
+          <span>Done</span>
+        </div>
+
+        <div class="status-counter counter-hold">
+          <strong id="countHold">0</strong>
+          <span>On Hold</span>
+        </div>
+
+        <div class="status-counter counter-cancelled">
+          <strong id="countCancelled">0</strong>
+          <span>Cancelled</span>
+        </div>
+
+        <div id="showing" class="showing">
+          Showing 0 of 0
+        </div>
+      </div>
+
+      <div class="content-grid">
+        <aside>
+          <div id="filters"></div>
+
+          <button id="clearFilters" class="clear-button">
+            Clear filters
+          </button>
+        </aside>
+
+        <section id="projectList" class="project-list"></section>
+      </div>
+    </section>
+
+    <section id="secondaryView" hidden></section>
+  </main>
+</div>
+
+<button id="assistantButton" class="assistant-button" title="AI Assistant">
+  ♙
+</button>
+
+<div class="modal fade" id="projectModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitle" class="modal-title"></h2>
+        <button class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div id="modalBody" class="modal-body"></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+<script
+  src="https://cdn.jsdelivr.net/npm/boosted@5.3.3/dist/js/boosted.bundle.min.js"
+  integrity="sha384-3RoJImQ+Yz4jAyP6xW29kJhqJOE3rdju9wkNycjCuDnGAtC/crm79mLcwj1w2o/"
+  crossorigin="anonymous">
+</script>
+
+<script>
+"use strict";
+
+/* -----------------------------
+   Données initiales de secours
+------------------------------ */
+
+let projects = [
+  {
+    id: "ITCORPDMD-1197",
+    name: "ALCAZAR - PROGRAM MANAGEMENT",
+    domain: "EARLY-LIFE",
+    summary: "Overall coordination of the Alcazar program.",
+    cj: "-",
+    pa: "-",
+    ba: "-",
+    pm: "Mylene Boulay",
+    start: "2025-04-01",
+    end: "",
+    release: "off release",
+    workload: "Moderate",
+    status: "On Going",
+    itStatus: "N/A",
+    link: ""
+  },
+  {
+    id: "ITCORPDMD-1319",
+    name: "ALCAZAR - MASS MIGRATION",
+    domain: "EARLY-LIFE",
+    summary: "Execute large-scale migration of VOO customers to Orange systems.",
+    cj: "Nathan Lardinois",
+    pa: "-",
+    ba: "Candice Verdussen",
+    pm: "Mylene Boulay",
+    start: "2025-06-03",
+    end: "",
+    release: "R8 - 09/08/2026",
+    workload: "High",
+    status: "On Going",
+    itStatus: "Business Analysis",
+    link: ""
+  },
+  {
+    id: "ITCORPDMD-1200",
+    name: "ALCAZAR - DROP 1 & 2 - VOLUNTARY FLOW",
+    domain: "EARLY-LIFE",
+    summary: "",
+    cj: "-",
+    pa: "Mylene Boulay",
+    ba: "Candice Verdussen",
+    pm: "Mylene Boulay",
+    start: "2024-04-01",
+    end: "2025-05-01",
+    release: "R4 - 13/04/2025",
+    workload: "Low",
+    status: "Done",
+    itStatus: "T4 done",
+    link: ""
+  },
+  {
+    id: "ITCORPDMD-1480",
+    name: "ALCAZAR - DROP 3 - CAMPAIGNING FLOW",
+    domain: "EARLY-LIFE",
+    summary: "",
+    cj: "-",
+    pa: "Mylene Boulay",
+    ba: "Candice Verdussen",
+    pm: "Mylene Boulay",
+    start: "2025-03-27",
+    end: "2025-06-22",
+    release: "R6 - 22/06/2025",
+    workload: "Low",
+    status: "Done",
+    itStatus: "T4 done",
+    link: ""
+  },
+  {
+    id: "ITCORPDMD-1317",
+    name: "ALCAZAR - DROP 3.1 - KEEP VOO STB",
+    domain: "EARLY-LIFE",
+    summary: "Migrate customers while keeping the VOO Set-Top Box.",
+    cj: "-",
+    pa: "Pierre Pector",
+    ba: "Candice Verdussen",
+    pm: "Mylene Boulay",
+    start: "2025-02-01",
+    end: "2025-09-28",
+    release: "R9 - 28/09/2025",
+    workload: "High",
+    status: "Done",
+    itStatus: "T3 done",
+    link: ""
+  },
+  {
+    id: "ITCORPDMD-1482",
+    name: "ALCAZAR - DROP 3.2 - KEEP CAM CARDS & VOOBOX",
+    domain: "EARLY-LIFE",
+    summary: "Migrate customers using CAM cards and VOObox.",
+    cj: "-",
+    pa: "-",
+    ba: "Candice Verdussen",
+    pm: "Mylene Boulay",
+    start: "2025-06-01",
+    end: "2025-12-07",
+    release: "R12 - 07/12/2025",
+    workload: "High",
+    status: "Done",
+    itStatus: "T3 done",
+    link: ""
+  },
+  {
+    id: "ITCORPDMD-1607",
+    name: "ALCAZAR - DROP 4 - KEEP FIXED PHONE",
+    domain: "EARLY-LIFE",
+    summary: "Migrate customers while maintaining fixed voice service.",
+    cj: "-",
+    pa: "-",
+    ba: "Candice Verdussen",
+    pm: "Mylene Boulay",
+    start: "2025-06-01",
+    end: "2026-03-29",
+    release: "R3 - 29/03/2026",
+    workload: "High",
+    status: "Done",
+    itStatus: "T1 done",
+    link: ""
+  },
+  {
+    id: "ITCORPDMD-1011",
+    name: "FIBRE PHASE 1 : Drop 4",
+    domain: "PRE-LIFE",
+    summary: "Promo calculator and Fiber eligibility tool updates.",
+    cj: "-",
+    pa: "-",
+    ba: "Fleur Duprez",
+    pm: "Georgios Mavroidis",
+    start: "",
+    end: "",
+    release: "R10 - 04/10/2026",
+    workload: "Moderate",
+    status: "On Going",
+    itStatus: "T1 done",
+    link: ""
+  },
+  {
+    id: "ITCORPDMD-1066",
+    name: "ConnectX drop 1.1",
+    domain: "IN-LIFE",
+    summary: "Migration of C1 prepaid platform towards Amdocs.",
+    cj: "-",
+    pa: "-",
+    ba: "Koen Rosiers",
+    pm: "-",
+    start: "2025-09-01",
+    end: "2027-02-15",
+    release: "R3 - 29/03/2026",
+    workload: "High",
+    status: "On Going",
+    itStatus: "T2 done",
+    link: ""
+  },
+  {
+    id: "ITCORPDMD-1933",
+    name: "Stop Selling VOO",
+    domain: "EARLY-LIFE",
+    summary: "Stop selling VOO offers and align customer journeys.",
+    cj: "-",
+    pa: "Jean-Louis De Rede",
+    ba: "Pierre Pector",
+    pm: "Mylene Boulay",
+    start: "2025-10-01",
+    end: "",
+    release: "R1 - 2027",
+    workload: "Moderate",
+    status: "On Going",
+    itStatus: "T1 done",
+    link: ""
+  },
+  {
+    id: "ITCORPDMD-1881",
+    name: "Security Solution V2",
+    domain: "EARLY-LIFE",
+    summary: "Deploy an enhanced cybersecurity solution offering.",
+    cj: "Nathan Lardinois",
+    pa: "Jean-Louis De Rede",
+    ba: "Erman Sumlu",
+    pm: "Luc Wilna",
+    start: "2025-10-01",
+    end: "",
+    release: "R12 - 12/12/2026",
+    workload: "Moderate",
+    status: "On Going",
+    itStatus: "T-2 done",
+    link: ""
+  },
+  {
+    id: "ITCORPDMD-2227",
+    name: "Detox - MVP 2 - Advanced Payment Check",
+    domain: "IN-LIFE",
+    summary: "Consultation des soldes ouverts et échus via l’assistant GenAI.",
+    cj: "Denitsa Gospodinova",
+    pa: "Delphine Parmentier",
+    ba: "Tom Guisgand",
+    pm: "Peter Dhooge",
+    start: "2026-05-19",
+    end: "",
+    release: "off release",
+    workload: "Moderate",
+    status: "On Going",
+    itStatus: "T-2 done",
+    link: ""
+  }
+];
+
+let changes = [];
+let currentView = "Portfolio";
+
+/* -----------------------------
+   Utilitaires
+------------------------------ */
+
+const $ = selector => document.querySelector(selector);
+
+function text(value) {
+  return String(value ?? "")
+    .replace(/<br\s*\/?>/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
-/* Structure générale */
-.sidebar {
-  width: var(--sidebar-width);
-  min-width: var(--sidebar-width);
-  padding: 24px 14px 16px;
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
-.main {
-  padding: 24px 32px;
+function normalise(value) {
+  return text(value).toLowerCase();
 }
 
-.brand {
-  gap: 12px;
-  margin-bottom: 28px;
+function projectTeam(project) {
+  const people = [
+    project.cj && project.cj !== "-" ? `CJ ${project.cj}` : "",
+    project.pa && project.pa !== "-" ? `PA ${project.pa}` : "",
+    project.ba && project.ba !== "-" ? `BA ${project.ba}` : "",
+    project.pm && project.pm !== "-" ? `PM ${project.pm}` : ""
+  ];
+
+  return people.filter(Boolean).join(" · ") || "No team assigned";
 }
 
-.brand-icon {
-  width: 44px;
-  height: 44px;
-  font-size: 28px;
-  line-height: 36px;
+function statusClass(status) {
+  return {
+    "On Going": "badge-going",
+    "Done": "badge-done",
+    "On Hold": "badge-hold",
+    "Cancelled": "badge-cancelled"
+  }[status] || "";
 }
 
-.brand h1 {
-  font-size: 21px;
-  line-height: 1.15;
+function allPeople() {
+  const result = [];
+
+  projects.forEach(project => {
+    [
+      project.cj,
+      project.pa,
+      project.ba,
+      project.pm
+    ].forEach(person => {
+      const value = text(person);
+      if (value && value !== "-") result.push(value);
+    });
+  });
+
+  return [...new Set(result)].sort((a, b) => a.localeCompare(b));
 }
 
-.brand small {
-  font-size: 15px;
-  margin-top: 3px;
+function uniqueValues(field) {
+  return [
+    ...new Set(
+      projects
+        .map(project => text(project[field]))
+        .filter(Boolean)
+    )
+  ].sort((a, b) => a.localeCompare(b));
 }
 
-/* Menu */
-.nav-link {
-  padding: 13px 10px;
-  font-size: 17px;
-  border-left-width: 3px;
+/* -----------------------------
+   Filtres
+------------------------------ */
+
+const filterDefinitions = [
+  ["domain", "Domain"],
+  ["status", "Project status"],
+  ["itStatus", "IT status"],
+  ["release", "Release"],
+  ["workload", "Workload"],
+  ["person", "Person"]
+];
+
+function buildFilters() {
+  $("#filters").innerHTML = filterDefinitions.map(([field, label]) => {
+    let values = field === "person"
+      ? allPeople()
+      : uniqueValues(field);
+
+    return `
+      <label class="filter-label" for="filter-${field}">
+        ${escapeHtml(label)}
+      </label>
+
+      <select id="filter-${field}"
+              class="filter-select"
+              data-field="${escapeHtml(field)}">
+        <option value="">All</option>
+        ${values.map(value => `
+          <option value="${escapeHtml(value)}">
+            ${escapeHtml(value)}
+          </option>
+        `).join("")}
+      </select>
+    `;
+  }).join("");
+
+  document.querySelectorAll(".filter-select").forEach(select => {
+    select.addEventListener("change", renderPortfolio);
+  });
 }
 
-/* Barre supérieure */
-.toolbar {
-  display: grid;
-  grid-template-columns: minmax(300px, 430px) repeat(4, auto) 1fr;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 18px;
+function getFilteredProjects() {
+  const query = normalise($("#searchInput").value);
+
+  return projects.filter(project => {
+    const searchable = normalise([
+      project.id,
+      project.name,
+      project.domain,
+      project.summary,
+      project.cj,
+      project.pa,
+      project.ba,
+      project.pm,
+      project.release,
+      project.status,
+      project.itStatus,
+      project.workload
+    ].join(" "));
+
+    if (query && !searchable.includes(query)) {
+      return false;
+    }
+
+    return [...document.querySelectorAll(".filter-select")].every(select => {
+      const value = select.value;
+      const field = select.dataset.field;
+
+      if (!value) return true;
+
+      if (field === "person") {
+        return [
+          project.cj,
+          project.pa,
+          project.ba,
+          project.pm
+        ].some(person => normalise(person) === normalise(value));
+      }
+
+      return text(project[field]) === value;
+    });
+  });
 }
 
-.search {
-  width: 100%;
-  min-height: 48px;
-  padding: 10px 15px;
-  font-size: 16px;
+/* -----------------------------
+   Portfolio
+------------------------------ */
+
+function updateCounters() {
+  $("#totalProjects").textContent = `${projects.length} projects`;
+
+  $("#countGoing").textContent =
+    projects.filter(project => project.status === "On Going").length;
+
+  $("#countDone").textContent =
+    projects.filter(project => project.status === "Done").length;
+
+  $("#countHold").textContent =
+    projects.filter(project => project.status === "On Hold").length;
+
+  $("#countCancelled").textContent =
+    projects.filter(project => project.status === "Cancelled").length;
 }
 
-.counter {
-  padding: 10px 18px;
-  font-size: 15px;
-  border-radius: 24px;
-}
+function renderPortfolio() {
+  updateCounters();
 
-.counter strong {
-  font-size: 20px;
-  margin-right: 7px;
-}
+  const result = getFilteredProjects();
 
-.showing {
-  font-size: 14px;
-  text-align: right;
-}
+  $("#showing").textContent =
+    `Showing ${result.length} of ${projects.length}`;
 
-/* Zone principale */
-.workspace {
-  display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
-  gap: var(--content-gap);
-}
-
-.filters label {
-  margin: 16px 0 6px;
-  font-size: 14px;
-}
-
-.filters select {
-  min-height: 46px;
-  padding: 8px 12px;
-  font-size: 15px;
-}
-
-#clearFilters {
-  min-height: 44px;
-  font-size: 15px;
-}
-
-/* Liste des projets */
-.projects {
-  min-width: 0;
-}
-
-.project-card {
-  min-height: 82px;
-  padding: 16px 22px;
-  margin-bottom: 10px;
-  border-radius: 14px;
-  gap: 18px;
-}
-
-.project-title {
-  font-size: 17px;
-  line-height: 1.25;
-}
-
-.team {
-  margin-top: 6px;
-  font-size: 14px;
-  line-height: 1.35;
-}
-
-.badges {
-  gap: 7px;
-  margin-left: auto;
-}
-
-.badge-app {
-  padding: 7px 10px;
-  border-radius: 7px;
-  font-size: 13px;
-}
-
-/* Boutons inférieurs */
-.sidebar-bottom .btn {
-  min-height: 40px;
-  padding: 8px 12px;
-  font-size: 14px;
-}
-
-/* Assistant */
-.chat {
-  right: 24px;
-  bottom: 22px;
-  width: 56px;
-  height: 56px;
-  font-size: 23px;
-}
-
-/* Vues secondaires */
-.view-title {
-  font-size: 24px;
-  margin-bottom: 18px;
-}
-
-.table-card {
-  padding: 18px;
-  border-radius: 12px;
-  font-size: 14px;
-}
-
-/* Écrans intermédiaires */
-@media (max-width: 1450px) {
-  .sidebar {
-    width: 230px;
-    min-width: 230px;
+  if (!result.length) {
+    $("#projectList").innerHTML = `
+      <div class="view-card empty-state">
+        No project found.
+      </div>
+    `;
+    return;
   }
 
-  .toolbar {
-    grid-template-columns: minmax(260px, 1fr) repeat(4, auto);
-  }
+  $("#projectList").innerHTML = result.map(project => `
+    <article class="project-card"
+             data-id="${escapeHtml(project.id)}">
 
-  .showing {
-    grid-column: 1 / -1;
-    text-align: left;
-  }
+      <div>
+        <div class="project-name">
+          ${escapeHtml(project.name)}
+        </div>
 
-  .workspace {
-    grid-template-columns: 240px minmax(0, 1fr);
-  }
+        <div class="project-team">
+          ${escapeHtml(projectTeam(project))}
+        </div>
+      </div>
 
-  .project-card {
-    align-items: flex-start;
-  }
+      <div class="project-badges">
+        <span class="project-badge">
+          ${escapeHtml(project.domain || "No domain")}
+        </span>
 
-  .badges {
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
+        <span class="project-badge ${statusClass(project.status)}">
+          ${escapeHtml(project.status || "No status")}
+        </span>
+
+        <span class="project-badge badge-release">
+          ${escapeHtml(project.release || "No release")}
+        </span>
+      </div>
+    </article>
+  `).join("");
+
+  document.querySelectorAll(".project-card").forEach(card => {
+    card.addEventListener("click", () => {
+      openProject(card.dataset.id);
+    });
+  });
 }
 
-/* Tablettes et petits écrans */
-@media (max-width: 900px) {
-  .app {
-    display: block;
+/* -----------------------------
+   Vues secondaires
+------------------------------ */
+
+function renderSecondaryView(view) {
+  $("#portfolioView").hidden = view !== "Portfolio";
+  $("#secondaryView").hidden = view === "Portfolio";
+
+  if (view === "Portfolio") {
+    renderPortfolio();
+    return;
   }
 
-  .sidebar {
-    width: 100%;
-    min-width: 0;
-    border-right: 0;
-    border-bottom: 1px solid #ddd;
-  }
+  const renderers = {
+    Timeline: renderTimeline,
+    People: renderPeople,
+    Changes: renderChanges,
+    Quality: renderQuality,
+    Reports: renderReports
+  };
 
-  .sidebar-bottom {
-    margin-top: 20px;
-  }
-
-  .workspace {
-    grid-template-columns: 1fr;
-  }
-
-  .toolbar {
-    display: flex;
-    flex-wrap: wrap;
-  }
-
-  .search {
-    flex: 1 1 100%;
-  }
-
-  .counter {
-    flex: 1 1 auto;
-  }
-
-  .project-card {
-    display: block;
-  }
-
-  .badges {
-    justify-content: flex-start;
-    margin: 12px 0 0;
-  }
+  $("#secondaryView").innerHTML = `
+    <h2 class="view-title">${escapeHtml(view)}</h2>
+    <div class="view-card">
+      ${renderers[view]()}
+    </div>
+  `;
 }
+
+function renderTimeline() {
+  const sorted = [...projects].sort((a, b) =>
+    String(a.start).localeCompare(String(b.start))
+  );
+
+  return `
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Project</th>
+          <th>Domain</th>
+          <th>Start date</th>
+          <th>End date</th>
+          <th>Release</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${sorted.map(project => `
+          <tr>
+            <td>${escapeHtml(project.name)}</td>
+            <td>${escapeHtml(project.domain)}</td>
+            <td>${escapeHtml(project.start || "-")}</td>
+            <td>${escapeHtml(project.end || "-")}</td>
+            <td>${escapeHtml(project.release || "-")}</td>
+            <td>${escapeHtml(project.status || "-")}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderPeople() {
+  const people = {};
+
+  projects.forEach(project => {
+    [
+      project.cj,
+      project.pa,
+      project.ba,
+      project.pm
+    ].forEach(person => {
+      const name = text(person);
+
+      if (!name || name === "-") return;
+
+      people[name] ??= [];
+      people[name].push(project.name);
+    });
+  });
+
+  return `
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Person</th>
+          <th>Number of projects</th>
+          <th>Projects</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${Object.entries(people)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([person, list]) => `
+            <tr>
+              <td>${escapeHtml(person)}</td>
+              <td>${list.length}</td>
+              <td>${list.map(escapeHtml).join("<br>")}</td>
+            </tr>
+          `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderChanges() {
+  if (!changes.length) {
+    return `<div class="empty-state">No changes recorded.</div>`;
+  }
+
+  return `
+    <table class="table table-hover align-middle">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Project</th>
+          <th>Field</th>
+          <th>Old value</th>
+          <th>New value</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${changes.map(change => `
+          <tr>
+            <td>${escapeHtml(change.date)}</td>
+            <td>${escapeHtml(change.project)}</td>
+            <td>${escapeHtml(change.field)}</td>
+            <td>${escapeHtml(change.oldValue)}</td>
+            <td>${escapeHtml(change.newValue)}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+}
+
+function renderQuality() {
+  const issues = [];
+
+  projects.forEach(project => {
+    if (!project.id || ["TBC", "N/A"].includes(project.id)) {
+      issues.push(`${project.name}: missing or temporary project ID`);
+    }
+
+    if (!project.name) {
+      issues.push("Project without name");
+    }
+
+    if (!project.domain) {
+      issues.push(`${project.name}: missing domain`);
+    }
+
+    if (!project.status) {
+      issues.push(`${project.name}: missing project status`);
+    }
+
+    if (!project.pm || project.pm === "-") {
+      issues.push(`${project.name}: missing Project Manager`);
+    }
+  });
+
+  if (!issues.length) {
+    return `
+      <div class="text-success">
+        No quality issue detected.
+      </div>
+    `;
+  }
+
+  return `
+    <ul class="quality-list">
+      ${issues.map(issue => `
+        <li>${escapeHtml(issue)}</li>
+      `).join("")}
+    </ul>
+  `;
+}
+
+function renderReports() {
+  const domains = {};
+  const statuses = {};
+  const workloads = {};
+
+  projects.forEach(project => {
+    domains[project.domain || "Undefined"] =
+      (domains[project.domain || "Undefined"] || 0) + 1;
+
+    statuses[project.status || "Undefined"] =
+      (statuses[project.status || "Undefined"] || 0) + 1;
+
+    workloads[project.workload || "Undefined"] =
+      (workloads[project.workload || "Undefined"] || 0) + 1;
+  });
+
+  const reportTable = (title, values) => `
+    <h3 class="h5 mt-3">${escapeHtml(title)}</h3>
+    <table class="table table-sm">
+      <thead>
+        <tr>
+          <th>Value</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${Object.entries(values).map(([key, value]) => `
+          <tr>
+            <td>${escapeHtml(key)}</td>
+            <td>${value}</td>
+          </tr>
+        `).join("")}
+      </tbody>
+    </table>
+  `;
+
+  return `
+    ${reportTable("Projects by domain", domains)}
+    ${reportTable("Projects by status", statuses)}
+    ${reportTable("Projects by workload", workloads)}
+  `;
+}
+
+/* -----------------------------
+   Fiche projet
+------------------------------ */
+
+function openProject(id) {
+  const project = projects.find(item => item.id === id);
+
+  if (!project) return;
+
+  $("#modalTitle").textContent = project.name;
+
+  $("#modalBody").innerHTML = `
+    <dl class="detail-grid">
+      <dt>Project ID</dt>
+      <dd>${escapeHtml(project.id)}</dd>
+
+      <dt>Domain</dt>
+      <dd>${escapeHtml(project.domain)}</dd>
+
+      <dt>Project status</dt>
+      <dd>${escapeHtml(project.status)}</dd>
+
+      <dt>IT status</dt>
+      <dd>${escapeHtml(project.itStatus)}</dd>
+
+      <dt>Workload</dt>
+      <dd>${escapeHtml(project.workload)}</dd>
+
+      <dt>Release</dt>
+      <dd>${escapeHtml(project.release)}</dd>
+
+      <dt>Start date</dt>
+      <dd>${escapeHtml(project.start)}</dd>
+
+      <dt>End date</dt>
+      <dd>${escapeHtml(project.end)}</dd>
+
+      <dt>Customer Journey Lead</dt>
+      <dd>${escapeHtml(project.cj)}</dd>
+
+      <dt>Process Analyst</dt>
+      <dd>${escapeHtml(project.pa)}</dd>
+
+      <dt>Business Analyst</dt>
+      <dd>${escapeHtml(project.ba)}</dd>
+
+      <dt>Project Manager</dt>
+      <dd>${escapeHtml(project.pm)}</dd>
+
+      <dt>Objective and scope</dt>
+      <dd>${escapeHtml(project.summary)}</dd>
+
+      <dt>Link</dt>
+      <dd>
+        ${
+          project.link
+            ? `<a href="${escapeHtml(project.link)}"
+                  target="_blank"
+                  rel="noopener noreferrer">
+                 Open link
+               </a>`
+            : "-"
+        }
+      </dd>
+    </dl>
+  `;
+
+  bootstrap.Modal
+    .getOrCreateInstance($("#projectModal"))
+    .show();
+}
+
+/* -----------------------------
+   Import Excel
+------------------------------ */
+
+function findHeaderRow(rows) {
+  const expected = [
+    "DOMAIN",
+    "PROJECT-ID",
+    "PROJECT NAME"
+  ];
+
+  return rows.findIndex(row => {
+    const cells = row.map(cell => text(cell).toUpperCase());
+    return expected.filter(value => cells.includes(value)).length >= 2;
+  });
+}
+
+function findColumn(headers, names) {
+  const normalisedHeaders = headers.map(header =>
+    text(header).toUpperCase()
+  );
+
+  for (const name of names) {
+    const index = normalisedHeaders.indexOf(name.toUpperCase());
+
+    if (index !== -1) return index;
+  }
+
+  return -1;
+}
+
+function cell(row, index) {
+  return index >= 0 ? text(row[index]) : "";
+}
+
+async function importExcel(file) {
+  const buffer = await file.arrayBuffer();
+
+  const workbook = XLSX.read(buffer, {
+    type: "array",
+    cellDates: false,
+    raw: false
+  });
+
+  const sheetName =
+    workbook.SheetNames.includes("Projects")
+      ? "Projects"
+      : workbook.SheetNames[0];
+
+  const sheet = workbook.Sheets[sheetName];
+
+  const rows = XLSX.utils.sheet_to_json(sheet, {
+    header: 1,
+    defval: ""
+  });
+
+  const headerRowIndex = findHeaderRow(rows);
+
+  if (headerRowIndex === -1) {
+    alert("La ligne d'en-tête de la feuille Projects est introuvable.");
+    return;
+  }
+
+  const headers = rows[headerRowIndex];
+
+  const columns = {
+    id: findColumn(headers, ["PROJECT-ID", "PROJECT ID"]),
+    name: findColumn(headers, ["PROJECT NAME", "Project"]),
+    domain: findColumn(headers, ["DOMAIN", "Domain"]),
+    summary: findColumn(headers, [
+      "Project Objective & Scope",
+      "Summary"
+    ]),
+    cj: findColumn(headers, [
+      "CUST. JOURNEY LEAD",
+      "CUSTOMER JOURNEY LEAD"
+    ]),
+    pa: findColumn(headers, ["PROCESS ANALYST"]),
+    ba: findColumn(headers, ["BUSINESS ANALYST"]),
+    pm: findColumn(headers, ["PROJECT MANAGER"]),
+    start: findColumn(headers, ["START DATE"]),
+    end: findColumn(headers, ["END DATE"]),
+    release: findColumn(headers, ["RELEASE"]),
+    workload: findColumn(headers, ["WORKLOAD"]),
+    status: findColumn(headers, ["PROJECT STATUS"]),
+    itStatus: findColumn(headers, ["IT STATUS"]),
+    link: findColumn(headers, ["LINK"])
+  };
+
+  const imported = rows
+    .slice(headerRowIndex + 1)
+    .map(row => {
+      const name = cell(row, columns.name);
+
+      if (!name) return null;
+
+      return {
+        id: cell(row, columns.id) || `TECH-${crypto.randomUUID()}`,
+        name,
+        domain: cell(row, columns.domain),
+        summary: cell(row, columns.summary),
+        cj: cell(row, columns.cj),
+        pa: cell(row, columns.pa),
+        ba: cell(row, columns.ba),
+        pm: cell(row, columns.pm),
+        start: cell(row, columns.start),
+        end: cell(row, columns.end),
+        release: cell(row, columns.release),
+        workload: cell(row, columns.workload),
+        status: cell(row, columns.status),
+        itStatus: cell(row, columns.itStatus),
+        link: cell(row, columns.link)
+      };
+    })
+    .filter(Boolean);
+
+  if (!imported.length) {
+    alert("Aucun projet n'a été trouvé dans la feuille Projects.");
+    return;
+  }
+
+  projects = imported;
+
+  $("#dataInfo").textContent =
+    `Data imported from ${file.name}`;
+
+  buildFilters();
+  renderPortfolio();
+
+  alert(`${projects.length} projets importés.`);
+}
+
+/* -----------------------------
+   Export Excel
+------------------------------ */
+
+function exportExcel() {
+  const rows = projects.map(project => ({
+    "PROJECT-ID": project.id,
+    "PROJECT NAME": project.name,
+    "DOMAIN": project.domain,
+    "Project Objective & Scope": project.summary,
+    "CUST. JOURNEY LEAD": project.cj,
+    "PROCESS ANALYST": project.pa,
+    "BUSINESS ANALYST": project.ba,
+    "PROJECT MANAGER": project.pm,
+    "START DATE": project.start,
+    "END DATE": project.end,
+    "RELEASE": project.release,
+    "WORKLOAD": project.workload,
+    "PROJECT STATUS": project.status,
+    "IT STATUS": project.itStatus,
+    "LINK": project.link
+  }));
+
+  const workbook = XLSX.utils.book_new();
+  const worksheet = XLSX.utils.json_to_sheet(rows);
+
+  XLSX.utils.book_append_sheet(
+    workbook,
+    worksheet,
+    "Projects"
+  );
+
+  XLSX.writeFile(
+    workbook,
+    "CX_Team_Projects_export.xlsx"
+  );
+}
+
+/* -----------------------------
+   Assistant IA prototype
+------------------------------ */
+
+function assistantAction() {
+  const request = prompt(
+    "Assistant IA\n\nExemple :\nPasse ALCAZAR - MASS MIGRATION en Done."
+  );
+
+  if (!request) return;
+
+  const query = normalise(request);
+
+  const project = projects.find(item =>
+    query.includes(normalise(item.name))
+  );
+
+  if (!project) {
+    alert("Projet non trouvé.");
+    return;
+  }
+
+  const requestedStatus = [
+    "Done",
+    "On Going",
+    "On Hold",
+    "Cancelled"
+  ].find(status => query.includes(normalise(status)));
+
+  if (!requestedStatus) {
+    alert(
+      "Prototype IA : statut non identifié.\n" +
+      "Utilisez Done, On Going, On Hold ou Cancelled."
+    );
+    return;
+  }
+
+  const oldValue = project.status;
+
+  const confirmed = confirm(
+    `Confirmer la modification ?\n\n` +
+    `${project.name}\n` +
+    `Project status : ${oldValue} → ${requestedStatus}`
+  );
+
+  if (!confirmed) return;
+
+  project.status = requestedStatus;
+
+  changes.unshift({
+    date: new Date().toLocaleString(),
+    project: project.name,
+    field: "PROJECT STATUS",
+    oldValue,
+    newValue: requestedStatus
+  });
+
+  renderPortfolio();
+
+  alert("Modification enregistrée dans le prototype.");
+}
+
+/* -----------------------------
+   Événements
+------------------------------ */
+
+$("#searchInput").addEventListener("input", renderPortfolio);
+
+$("#clearFilters").addEventListener("click", () => {
+  $("#searchInput").value = "";
+
+  document.querySelectorAll(".filter-select").forEach(select => {
+    select.value = "";
+  });
+
+  renderPortfolio();
+});
+
+$("#refreshButton").addEventListener("click", () => {
+  buildFilters();
+  renderPortfolio();
+});
+
+$("#excelInput").addEventListener("change", event => {
+  const file = event.target.files[0];
+
+  if (file) {
+    importExcel(file);
+  }
+
+  event.target.value = "";
+});
+
+$("#exportButton").addEventListener("click", exportExcel);
+
+$("#assistantButton").addEventListener("click", assistantAction);
+
+document.querySelectorAll(".nav-link").forEach(link => {
+  link.addEventListener("click", () => {
+    document.querySelectorAll(".nav-link").forEach(item => {
+      item.classList.remove("active");
+    });
+
+    link.classList.add("active");
+
+    currentView = link.dataset.view;
+    renderSecondaryView(currentView);
+  });
+});
+
+/* -----------------------------
+   Initialisation
+------------------------------ */
+
+buildFilters();
+renderPortfolio();
+</script>
+
+</body>
+</html>
