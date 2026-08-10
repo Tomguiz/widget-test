@@ -1,873 +1,242 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CX Team Projects</title>
+/* ================================
+   Ajustement compact du dashboard
+   ================================ */
 
-  <link
-    href="https://cdn.jsdelivr.net/npm/boosted@5.3.3/dist/css/boosted.min.css"
-    rel="stylesheet"
-    integrity="sha384-laZ3JUZ5Ln2YqhfBvadDpNyBo7w5qmWaRnnXuRwNhJeTEFuSdGbzl4ZGHAEnTozR"
-    crossorigin="anonymous">
-
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
-  <style>
-    :root {
-      --orange: #f16e00;
-      --bg: #f5f5f5;
-    }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: #222;
-    }
-
-    .app {
-      display: flex;
-      min-height: 100vh;
-    }
-
-    .sidebar {
-      width: 445px;
-      background: #fff;
-      border-right: 1px solid #ddd;
-      padding: 34px 22px 20px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 45px;
-    }
-
-    .brand-icon {
-      width: 60px;
-      height: 60px;
-      background: var(--orange);
-      color: #fff;
-      font-size: 38px;
-      line-height: 48px;
-      text-align: center;
-      font-weight: 700;
-    }
-
-    .brand h1 {
-      font-size: 30px;
-      margin: 0;
-    }
-
-    .brand small {
-      display: block;
-      color: #888;
-      font-size: 23px;
-    }
-
-    .nav-link {
-      display: block;
-      padding: 20px 9px;
-      color: #555;
-      font-size: 25px;
-      text-decoration: none;
-      border-left: 4px solid transparent;
-    }
-
-    .nav-link.active {
-      background: #f4f4f4;
-      color: #222;
-      border-left-color: var(--orange);
-      font-weight: 600;
-    }
-
-    .sidebar-bottom {
-      margin-top: auto;
-    }
-
-    .main {
-      flex: 1;
-      padding: 36px 42px;
-      overflow: auto;
-    }
-
-    .toolbar {
-      display: flex;
-      align-items: center;
-      gap: 44px;
-      margin-bottom: 18px;
-    }
-
-    .search {
-      width: 460px;
-      font-size: 25px;
-      padding: 18px 22px;
-    }
-
-    .counter {
-      border: 1px solid #ddd;
-      border-radius: 36px;
-      padding: 16px 30px;
-      background: #fff;
-      font-size: 22px;
-      white-space: nowrap;
-    }
-
-    .counter strong {
-      font-size: 29px;
-      margin-right: 12px;
-    }
-
-    .counter.ongoing strong { color: #1769e0; }
-    .counter.done strong { color: #238348; }
-    .counter.hold strong { color: #b27800; }
-    .counter.cancelled strong { color: #a52b2b; }
-
-    .showing {
-      margin-left: auto;
-      color: #888;
-      font-size: 20px;
-      white-space: nowrap;
-    }
-
-    .workspace {
-      display: grid;
-      grid-template-columns: 460px 1fr;
-      gap: 44px;
-    }
-
-    .filters label {
-      display: block;
-      color: #888;
-      font-size: 20px;
-      margin: 22px 0 7px;
-    }
-
-    .filters select {
-      font-size: 21px;
-      min-height: 58px;
-    }
-
-    .projects {
-      min-width: 700px;
-    }
-
-    .project-card {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      min-height: 100px;
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 18px;
-      padding: 22px 28px;
-      margin-bottom: 14px;
-      cursor: pointer;
-    }
-
-    .project-card:hover {
-      border-color: #777;
-      box-shadow: 0 2px 6px #0001;
-    }
-
-    .project-title {
-      font-size: 26px;
-      font-weight: 600;
-    }
-
-    .team {
-      color: #929292;
-      font-size: 20px;
-      margin-top: 10px;
-    }
-
-    .badges {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-left: 20px;
-      white-space: nowrap;
-    }
-
-    .badge-app {
-      padding: 9px 14px;
-      border: 1px solid #aabccc;
-      border-radius: 9px;
-      font-size: 18px;
-      color: #397398;
-      background: #fafafa;
-    }
-
-    .badge-status {
-      border-color: #9fc2aa;
-      color: #247b43;
-    }
-
-    .status-going {
-      border-color: #9db9ed;
-      color: #1769e0;
-    }
-
-    .status-hold {
-      border-color: #d8bd7c;
-      color: #a87200;
-    }
-
-    .status-cancelled {
-      border-color: #d4a2a2;
-      color: #a52b2b;
-    }
-
-    .badge-release {
-      color: #888;
-      border-color: #ddd;
-    }
-
-    .view-title {
-      font-size: 30px;
-      margin-bottom: 25px;
-    }
-
-    .table-card {
-      background: #fff;
-      border-radius: 16px;
-      padding: 22px;
-      overflow: auto;
-    }
-
-    .chat {
-      position: fixed;
-      right: 32px;
-      bottom: 28px;
-      border: 0;
-      border-radius: 50%;
-      width: 72px;
-      height: 72px;
-      background: var(--orange);
-      color: white;
-      font-size: 30px;
-      box-shadow: 0 3px 10px #0003;
-    }
-
-    @media (max-width: 1200px) {
-      .sidebar { width: 260px; }
-      .workspace { grid-template-columns: 280px 1fr; }
-      .toolbar { flex-wrap: wrap; gap: 12px; }
-      .search { width: 100%; }
-    }
-  </style>
-</head>
-
-<body>
-<div class="app">
-
-  <aside class="sidebar">
-    <div class="brand">
-      <div class="brand-icon">−</div>
-      <div>
-        <h1>CX Team Projects</h1>
-        <small id="projectTotal">0 projects</small>
-      </div>
-    </div>
-
-    <nav id="navigation">
-      <a class="nav-link active" data-view="Portfolio">Portfolio</a>
-      <a class="nav-link" data-view="Timeline">Timeline</a>
-      <a class="nav-link" data-view="People">People</a>
-      <a class="nav-link" data-view="Changes">Changes</a>
-      <a class="nav-link" data-view="Quality">Quality</a>
-      <a class="nav-link" data-view="Reports">Reports</a>
-    </nav>
-
-    <div class="sidebar-bottom">
-      <button class="btn btn-outline-secondary w-100 mb-3" id="refreshBtn">
-        ↻ Refresh
-      </button>
-
-      <label class="btn btn-outline-primary w-100 mb-3">
-        Import Excel
-        <input id="fileInput" type="file" accept=".xlsm,.xlsx" hidden>
-      </label>
-
-      <button class="btn btn-outline-secondary w-100 mb-3" id="exportBtn">
-        Export Excel
-      </button>
-
-      <div class="d-flex gap-2">
-        <button class="btn btn-outline-primary flex-fill">EN</button>
-        <button class="btn btn-outline-secondary flex-fill">FR</button>
-      </div>
-    </div>
-  </aside>
-
-  <main class="main">
-    <section id="portfolioView">
-      <div class="toolbar">
-        <input id="search" class="form-control search"
-               placeholder="Search projects, people, domain">
-
-        <div class="counter ongoing">
-          <strong id="countOngoing">0</strong> On Going
-        </div>
-
-        <div class="counter done">
-          <strong id="countDone">0</strong> Done
-        </div>
-
-        <div class="counter hold">
-          <strong id="countHold">0</strong> On Hold
-        </div>
-
-        <div class="counter cancelled">
-          <strong id="countCancelled">0</strong> Cancelled
-        </div>
-
-        <div class="showing" id="showing">Showing 0 of 0</div>
-      </div>
-
-      <div class="workspace">
-        <aside class="filters">
-          <div id="filterContainer"></div>
-          <button id="clearFilters" class="btn btn-outline-secondary w-100 mt-4">
-            Clear filters
-          </button>
-        </aside>
-
-        <section>
-          <div id="projectList" class="projects"></div>
-        </section>
-      </div>
-    </section>
-
-    <section id="genericView" hidden></section>
-  </main>
-</div>
-
-<button class="chat" id="chatBtn" title="AI Assistant">♙</button>
-
-<div class="modal fade" id="projectModal" tabindex="-1">
-  <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2 class="modal-title" id="modalTitle"></h2>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-      <div class="modal-body" id="modalBody"></div>
-    </div>
-  </div>
-</div>
-
-<script>
-const initialProjects = [
-  {
-    id: "ITCORPDMD-1197",
-    name: "ALCAZAR - PROGRAM MANAGEMENT",
-    domain: "EARLY-LIFE",
-    status: "On Going",
-    itStatus: "N/A",
-    workload: "Moderate",
-    release: "off release",
-    pm: "Mylene Boulay",
-    team: "PM Mylene Boulay",
-    start: "2025-04-01",
-    end: "",
-    summary: "Overall coordination of the Alcazar program."
-  },
-  {
-    id: "ITCORPDMD-1319",
-    name: "ALCAZAR - MASS MIGRATION",
-    domain: "EARLY-LIFE",
-    status: "On Going",
-    itStatus: "Business Analysis",
-    workload: "High",
-    release: "R8 - 09/08/2026",
-    pm: "Mylene Boulay",
-    team: "CJ Nathan Lardinois · BA Candice Verdussen · PM Mylene Boulay",
-    start: "2025-06-03",
-    end: "",
-    summary: "Execute large-scale migration of VOO customers to Orange systems."
-  },
-  {
-    id: "ITCORPDMD-1480",
-    name: "ALCAZAR - DROP 3 - CAMPAIGNING FLOW",
-    domain: "EARLY-LIFE",
-    status: "Done",
-    itStatus: "T4 done",
-    workload: "Low",
-    release: "R6 - 22/06/2025",
-    pm: "Mylene Boulay",
-    team: "PA Mylene Boulay · BA Candice Verdussen · PM Mylene Boulay",
-    start: "2025-03-27",
-    end: "2025-06-22",
-    summary: ""
-  },
-  {
-    id: "ITCORPDMD-1317",
-    name: "ALCAZAR - DROP 3.1 - KEEP VOO STB",
-    domain: "EARLY-LIFE",
-    status: "Done",
-    itStatus: "T3 done",
-    workload: "High",
-    release: "R9 - 28/09/2025",
-    pm: "Mylene Boulay",
-    team: "PA Pierre Pector · BA Candice Verdussen · PM Mylene Boulay",
-    start: "2025-02-01",
-    end: "2025-09-28",
-    summary: "Migrate customers while keeping the VOO Set-Top Box."
-  },
-  {
-    id: "ITCORPDMD-1011",
-    name: "FIBRE PHASE 1 : Drop 4",
-    domain: "PRE-LIFE",
-    status: "On Going",
-    itStatus: "T1 done",
-    workload: "Moderate",
-    release: "R10 - 04/10/2026",
-    pm: "Georgios Mavroidis",
-    team: "BA Fleur Duprez · PM Georgios Mavroidis",
-    start: "",
-    end: "",
-    summary: "Promo calculator and Fiber eligibility tool updates."
-  },
-  {
-    id: "ITCORPDMD-1066",
-    name: "ConnectX drop 1.1",
-    domain: "IN-LIFE",
-    status: "On Going",
-    itStatus: "T2 done",
-    workload: "High",
-    release: "R3 - 29/03/2026",
-    pm: "Koen Rosiers",
-    team: "BA Koen Rosiers",
-    start: "2025-09-01",
-    end: "2027-02-15",
-    summary: "Migration of C1 prepaid platform towards Amdocs."
-  },
-  {
-    id: "ITCORPDMD-1933",
-    name: "Stop Selling VOO",
-    domain: "EARLY-LIFE",
-    status: "On Going",
-    itStatus: "T1 done",
-    workload: "Moderate",
-    release: "R1 - 2027",
-    pm: "Mylene Boulay",
-    team: "BA Pierre Pector · PM Mylene Boulay",
-    start: "2025-10-01",
-    end: "",
-    summary: "Stop selling VOO offers and align customer journeys."
-  },
-  {
-    id: "ITCORPDMD-1881",
-    name: "Security Solution V2",
-    domain: "EARLY-LIFE",
-    status: "On Going",
-    itStatus: "T-2 done",
-    workload: "Moderate",
-    release: "R12 - 12/12/2026",
-    pm: "Luc Wilna",
-    team: "CJ Nathan Lardinois · BA Erman Sumlu · PM Luc Wilna",
-    start: "2025-10-01",
-    end: "",
-    summary: "Deploy an enhanced cybersecurity solution offering."
-  },
-  {
-    id: "ITCORPDMD-2227",
-    name: "Detox - MVP 2 - Advanced Payment Check",
-    domain: "IN-LIFE",
-    status: "On Going",
-    itStatus: "T-2 done",
-    workload: "Moderate",
-    release: "off release",
-    pm: "Peter Dhooge",
-    team: "CJ Denitsa Gospodinova · BA Tom Guisgand · PM Peter Dhooge",
-    start: "2026-05-19",
-    end: "",
-    summary: "Consultation des soldes ouverts et échus via l’assistant GenAI."
-  }
-];
-
-let projects = structuredClone(initialProjects);
-let history = [];
-let currentView = "Portfolio";
-
-const filterFields = [
-  ["domain", "DOMAIN"],
-  ["status", "PROJECT STATUS"],
-  ["itStatus", "IT STATUS"],
-  ["release", "RELEASE"],
-  ["workload", "WORKLOAD"],
-  ["person", "PERSON"]
-];
-
-const $ = id => document.getElementById(id);
-
-function unique(field) {
-  return [...new Set(projects.map(p => p[field]).filter(Boolean))].sort();
+:root {
+  --sidebar-width: 260px;
+  --content-gap: 28px;
+  --text-main: #222;
+  --text-muted: #888;
 }
 
-function buildFilters() {
-  $("filterContainer").innerHTML = filterFields.map(([key, label]) => `
-    <label>${label}</label>
-    <select class="form-select filter" data-field="${key}">
-      <option value="">All</option>
-      ${unique(key).map(v => `<option value="${escapeHtml(v)}">${escapeHtml(v)}</option>`).join("")}
-    </select>
-  `).join("");
-
-  document.querySelectorAll(".filter").forEach(e =>
-    e.addEventListener("change", render)
-  );
+/* Structure générale */
+.sidebar {
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  padding: 24px 14px 16px;
 }
 
-function filteredProjects() {
-  const query = $("search").value.toLowerCase().trim();
-
-  return projects.filter(p => {
-    const text = Object.values(p).join(" ").toLowerCase();
-    if (query && !text.includes(query)) return false;
-
-    return [...document.querySelectorAll(".filter")].every(select => {
-      const value = select.value;
-      if (!value) return true;
-
-      if (select.dataset.field === "person") {
-        return `${p.team} ${p.pm}`.toLowerCase().includes(value.toLowerCase());
-      }
-
-      return p[select.dataset.field] === value;
-    });
-  });
+.main {
+  padding: 24px 32px;
 }
 
-function render() {
-  $("projectTotal").textContent = `${projects.length} projects`;
-
-  $("countOngoing").textContent =
-    projects.filter(p => p.status === "On Going").length;
-  $("countDone").textContent =
-    projects.filter(p => p.status === "Done").length;
-  $("countHold").textContent =
-    projects.filter(p => p.status === "On Hold").length;
-  $("countCancelled").textContent =
-    projects.filter(p => p.status === "Cancelled").length;
-
-  const list = filteredProjects();
-  $("showing").textContent = `Showing ${list.length} of ${projects.length}`;
-
-  $("projectList").innerHTML = list.map((p, index) => `
-    <article class="project-card" data-index="${projects.indexOf(p)}">
-      <div>
-        <div class="project-title">${escapeHtml(p.name)}</div>
-        <div class="team">${escapeHtml(p.team || "No team assigned")}</div>
-      </div>
-      <div class="badges">
-        <span class="badge-app">${escapeHtml(p.domain)}</span>
-        <span class="badge-app ${statusClass(p.status)}">${escapeHtml(p.status)}</span>
-        <span class="badge-app badge-release">${escapeHtml(p.release || "No release")}</span>
-      </div>
-    </article>
-  `).join("");
-
-  document.querySelectorAll(".project-card").forEach(card => {
-    card.addEventListener("click", () => openProject(card.dataset.index));
-  });
+.brand {
+  gap: 12px;
+  margin-bottom: 28px;
 }
 
-function renderView(view) {
-  currentView = view;
-  $("portfolioView").hidden = view !== "Portfolio";
-  $("genericView").hidden = view === "Portfolio";
-
-  if (view === "Portfolio") return;
-
-  const content = {
-    Timeline: timelineView(),
-    People: peopleView(),
-    Changes: changesView(),
-    Quality: qualityView(),
-    Reports: reportsView()
-  };
-
-  $("genericView").innerHTML = `
-    <h2 class="view-title">${view}</h2>
-    <div class="table-card">${content[view]}</div>
-  `;
+.brand-icon {
+  width: 44px;
+  height: 44px;
+  font-size: 28px;
+  line-height: 36px;
 }
 
-function timelineView() {
-  return `<table class="table">
-    <thead><tr><th>Project</th><th>Start</th><th>End</th><th>Release</th><th>Status</th></tr></thead>
-    <tbody>${projects.map(p => `
-      <tr>
-        <td>${escapeHtml(p.name)}</td>
-        <td>${escapeHtml(p.start || "-")}</td>
-        <td>${escapeHtml(p.end || "-")}</td>
-        <td>${escapeHtml(p.release || "-")}</td>
-        <td>${escapeHtml(p.status)}</td>
-      </tr>`).join("")}
-    </tbody>
-  </table>`;
+.brand h1 {
+  font-size: 21px;
+  line-height: 1.15;
 }
 
-function peopleView() {
-  const people = {};
-  projects.forEach(p => {
-    const members = `${p.team || ""}, ${p.pm || ""}`
-      .split(/[·,]/).map(x => x.trim())
-      .filter(x => x && x !== "-");
-
-    [...new Set(members)].forEach(person => {
-      people[person] ??= [];
-      people[person].push(p.name);
-    });
-  });
-
-  return `<table class="table">
-    <thead><tr><th>Person</th><th>Projects</th><th>Total</th></tr></thead>
-    <tbody>${Object.entries(people).sort().map(([person, list]) => `
-      <tr>
-        <td>${escapeHtml(person)}</td>
-        <td>${list.map(escapeHtml).join("<br>")}</td>
-        <td>${list.length}</td>
-      </tr>`).join("")}
-    </tbody>
-  </table>`;
+.brand small {
+  font-size: 15px;
+  margin-top: 3px;
 }
 
-function changesView() {
-  if (!history.length) return `<p class="text-muted">No changes recorded.</p>`;
-
-  return `<table class="table">
-    <thead><tr><th>Date</th><th>Project</th><th>Field</th><th>Old value</th><th>New value</th></tr></thead>
-    <tbody>${history.map(h => `
-      <tr>
-        <td>${escapeHtml(h.date)}</td>
-        <td>${escapeHtml(h.project)}</td>
-        <td>${escapeHtml(h.field)}</td>
-        <td>${escapeHtml(h.oldValue)}</td>
-        <td>${escapeHtml(h.newValue)}</td>
-      </tr>`).join("")}
-    </tbody>
-  </table>`;
+/* Menu */
+.nav-link {
+  padding: 13px 10px;
+  font-size: 17px;
+  border-left-width: 3px;
 }
 
-function qualityView() {
-  const issues = projects.flatMap(p => {
-    const result = [];
-    if (!p.pm || p.pm === "-") result.push(`${p.name}: missing Project Manager`);
-    if (!p.status) result.push(`${p.name}: missing status`);
-    if (!p.domain) result.push(`${p.name}: missing domain`);
-    if (!p.release) result.push(`${p.name}: missing release`);
-    return result;
-  });
-
-  return issues.length
-    ? `<ul>${issues.map(x => `<li>${escapeHtml(x)}</li>`).join("")}</ul>`
-    : `<p class="text-success">No quality issue detected.</p>`;
+/* Barre supérieure */
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(300px, 430px) repeat(4, auto) 1fr;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
 }
 
-function reportsView() {
-  const byDomain = {};
-  projects.forEach(p => byDomain[p.domain] = (byDomain[p.domain] || 0) + 1);
-
-  return `<h3>Projects by domain</h3>
-    <table class="table">
-      <thead><tr><th>Domain</th><th>Total</th></tr></thead>
-      <tbody>${Object.entries(byDomain).map(([domain, total]) =>
-        `<tr><td>${escapeHtml(domain)}</td><td>${total}</td></tr>`).join("")}
-      </tbody>
-    </table>`;
+.search {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 15px;
+  font-size: 16px;
 }
 
-function openProject(index) {
-  const p = projects[index];
-
-  $("modalTitle").textContent = p.name;
-  $("modalBody").innerHTML = `
-    <dl class="row">
-      <dt class="col-sm-3">Project ID</dt><dd class="col-sm-9">${escapeHtml(p.id)}</dd>
-      <dt class="col-sm-3">Domain</dt><dd class="col-sm-9">${escapeHtml(p.domain)}</dd>
-      <dt class="col-sm-3">Status</dt><dd class="col-sm-9">${escapeHtml(p.status)}</dd>
-      <dt class="col-sm-3">IT Status</dt><dd class="col-sm-9">${escapeHtml(p.itStatus)}</dd>
-      <dt class="col-sm-3">Workload</dt><dd class="col-sm-9">${escapeHtml(p.workload)}</dd>
-      <dt class="col-sm-3">Release</dt><dd class="col-sm-9">${escapeHtml(p.release)}</dd>
-      <dt class="col-sm-3">Project Manager</dt><dd class="col-sm-9">${escapeHtml(p.pm)}</dd>
-      <dt class="col-sm-3">Team</dt><dd class="col-sm-9">${escapeHtml(p.team)}</dd>
-      <dt class="col-sm-3">Objective & Scope</dt><dd class="col-sm-9">${escapeHtml(p.summary)}</dd>
-    </dl>
-  `;
-
-  new bootstrap.Modal($("projectModal")).show();
+.counter {
+  padding: 10px 18px;
+  font-size: 15px;
+  border-radius: 24px;
 }
 
-async function importExcel(file) {
-  const buffer = await file.arrayBuffer();
-  const workbook = XLSX.read(buffer, { type: "array", cellHTML: false });
-  const sheet = workbook.Sheets["Projects"] || workbook.Sheets[workbook.SheetNames[0]];
-  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+.counter strong {
+  font-size: 20px;
+  margin-right: 7px;
+}
 
-  const headers = rows.findIndex(row =>
-    row.some(cell => String(cell).trim() === "PROJECT NAME")
-  );
+.showing {
+  font-size: 14px;
+  text-align: right;
+}
 
-  if (headers < 0) {
-    alert("La colonne PROJECT NAME est introuvable.");
-    return;
+/* Zone principale */
+.workspace {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: var(--content-gap);
+}
+
+.filters label {
+  margin: 16px 0 6px;
+  font-size: 14px;
+}
+
+.filters select {
+  min-height: 46px;
+  padding: 8px 12px;
+  font-size: 15px;
+}
+
+#clearFilters {
+  min-height: 44px;
+  font-size: 15px;
+}
+
+/* Liste des projets */
+.projects {
+  min-width: 0;
+}
+
+.project-card {
+  min-height: 82px;
+  padding: 16px 22px;
+  margin-bottom: 10px;
+  border-radius: 14px;
+  gap: 18px;
+}
+
+.project-title {
+  font-size: 17px;
+  line-height: 1.25;
+}
+
+.team {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.badges {
+  gap: 7px;
+  margin-left: auto;
+}
+
+.badge-app {
+  padding: 7px 10px;
+  border-radius: 7px;
+  font-size: 13px;
+}
+
+/* Boutons inférieurs */
+.sidebar-bottom .btn {
+  min-height: 40px;
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+/* Assistant */
+.chat {
+  right: 24px;
+  bottom: 22px;
+  width: 56px;
+  height: 56px;
+  font-size: 23px;
+}
+
+/* Vues secondaires */
+.view-title {
+  font-size: 24px;
+  margin-bottom: 18px;
+}
+
+.table-card {
+  padding: 18px;
+  border-radius: 12px;
+  font-size: 14px;
+}
+
+/* Écrans intermédiaires */
+@media (max-width: 1450px) {
+  .sidebar {
+    width: 230px;
+    min-width: 230px;
   }
 
-  const header = rows[headers].map(x => String(x).trim());
-  const col = name => header.indexOf(name);
-
-  const imported = rows.slice(headers + 1)
-    .map(row => ({
-      id: String(row[col("PROJECT-ID")] || "").replace(/<br>/g, " ").trim() || "TECH-" + crypto.randomUUID(),
-      name: String(row[col("PROJECT NAME")] || "").replace(/<br>/g, " ").trim(),
-      domain: String(row[col("DOMAIN")] || "").trim(),
-      status: String(row[col("PROJECT STATUS")] || "").trim(),
-      itStatus: String(row[col("IT STATUS")] || "").trim(),
-      workload: String(row[col("WORKLOAD")] || "").trim(),
-      release: String(row[col("RELEASE")] || "").trim(),
-      pm: String(row[col("PROJECT MANAGER")] || "").trim(),
-      team: [
-        row[col("CUST. JOURNEY LEAD")] && `CJ ${row[col("CUST. JOURNEY LEAD")]}`,
-        row[col("PROCESS ANALYST")] && `PA ${row[col("PROCESS ANALYST")]}`,
-        row[col("BUSINESS ANALYST")] && `BA ${row[col("BUSINESS ANALYST")]}`,
-        row[col("PROJECT MANAGER")] && `PM ${row[col("PROJECT MANAGER")]}`
-      ].filter(Boolean).join(" · "),
-      start: String(row[col("START DATE")] || "").trim(),
-      end: String(row[col("END DATE")] || "").trim(),
-      summary: String(row[col("Project Objective & Scope")] || "").replace(/<br>/g, " ").trim()
-    }))
-    .filter(p => p.name);
-
-  if (!imported.length) {
-    alert("Aucun projet exploitable trouvé.");
-    return;
+  .toolbar {
+    grid-template-columns: minmax(260px, 1fr) repeat(4, auto);
   }
 
-  projects = imported;
-  buildFilters();
-  render();
-  alert(`${projects.length} projets importés.`);
-}
-
-function exportExcel() {
-  const rows = projects.map(p => ({
-    "PROJECT-ID": p.id,
-    "PROJECT NAME": p.name,
-    "DOMAIN": p.domain,
-    "PROJECT STATUS": p.status,
-    "IT STATUS": p.itStatus,
-    "WORKLOAD": p.workload,
-    "RELEASE": p.release,
-    "PROJECT MANAGER": p.pm,
-    "TEAM": p.team,
-    "START DATE": p.start,
-    "END DATE": p.end,
-    "SUMMARY": p.summary
-  }));
-
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.json_to_sheet(rows);
-  XLSX.utils.book_append_sheet(wb, ws, "Projects");
-  XLSX.writeFile(wb, "CX_Team_Projects_export.xlsx");
-}
-
-function statusClass(status) {
-  return {
-    "On Going": "status-going",
-    "On Hold": "status-hold",
-    "Cancelled": "status-cancelled",
-    "Done": "badge-status"
-  }[status] || "";
-}
-
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
-
-$("search").addEventListener("input", render);
-$("clearFilters").addEventListener("click", () => {
-  $("search").value = "";
-  document.querySelectorAll(".filter").forEach(e => e.value = "");
-  render();
-});
-
-$("refreshBtn").addEventListener("click", () => {
-  render();
-});
-
-$("fileInput").addEventListener("change", event => {
-  if (event.target.files[0]) importExcel(event.target.files[0]);
-});
-
-$("exportBtn").addEventListener("click", exportExcel);
-
-document.querySelectorAll(".nav-link").forEach(link => {
-  link.addEventListener("click", () => {
-    document.querySelectorAll(".nav-link").forEach(x => x.classList.remove("active"));
-    link.classList.add("active");
-    renderView(link.dataset.view);
-  });
-});
-
-$("chatBtn").addEventListener("click", () => {
-  const request = prompt(
-    "Assistant IA — Exemple :\nPasse ALCAZAR - MASS MIGRATION en Done."
-  );
-
-  if (!request) return;
-
-  const match = projects.find(p =>
-    request.toLowerCase().includes(p.name.toLowerCase())
-  );
-
-  if (!match) {
-    alert("Projet non trouvé.");
-    return;
+  .showing {
+    grid-column: 1 / -1;
+    text-align: left;
   }
 
-  if (/\bdone\b/i.test(request)) {
-    const oldValue = match.status;
-    const confirmed = confirm(
-      `Modifier le projet "${match.name}" ?\n\n` +
-      `Project Status : ${oldValue} → Done`
-    );
-
-    if (confirmed) {
-      match.status = "Done";
-      history.unshift({
-        date: new Date().toLocaleString(),
-        project: match.name,
-        field: "PROJECT STATUS",
-        oldValue,
-        newValue: "Done"
-      });
-      render();
-      alert("Modification enregistrée.");
-    }
-  } else {
-    alert("Prototype IA : demande comprise, mais cette action n’est pas encore configurée.");
+  .workspace {
+    grid-template-columns: 240px minmax(0, 1fr);
   }
-});
 
-buildFilters();
-render();
-</script>
+  .project-card {
+    align-items: flex-start;
+  }
 
-<script
-  src="https://cdn.jsdelivr.net/npm/boosted@5.3.3/dist/js/boosted.bundle.min.js"
-  integrity="sha384-3RoJImQ+Yz4jAyP6xW29kJhqJOE3rdju9wkNycjCuDnGAtC/crm79mLcwj1w2o/"
-  crossorigin="anonymous">
-</script>
-</body>
-</html>
+  .badges {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}
+
+/* Tablettes et petits écrans */
+@media (max-width: 900px) {
+  .app {
+    display: block;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    border-right: 0;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .sidebar-bottom {
+    margin-top: 20px;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .search {
+    flex: 1 1 100%;
+  }
+
+  .counter {
+    flex: 1 1 auto;
+  }
+
+  .project-card {
+    display: block;
+  }
+
+  .badges {
+    justify-content: flex-start;
+    margin: 12px 0 0;
+  }
+}
